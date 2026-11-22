@@ -1,7 +1,6 @@
 // Tiny stack VM entry for make.fun competition tiny-stack-vm-01-run-20261122.
-// A faithful interpreter of the kit's tiny stack ISA (generator/subject/ISA.md),
-// matching the reference VM generator/subject/vm.mjs: exact 32-bit wrapping
-// arithmetic, every trap code, stack/call/memory bounds, step and output limits.
+// Faithful interpreter of the kit's tiny stack ISA, matching the reference
+// VM generator/subject/vm.mjs: exact 32-bit wrapping, every trap code, all bounds.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -31,7 +30,7 @@ function run(p: Uint8Array, inp: Uint8Array): { out: Uint8Array; exit: number } 
     if (steps === STEP_LIMIT) return trap(10);
     if (pc < 0 || pc >= n) return trap(9);
     const op = p[pc];
-    // opcode -> [immediate bytes, pops, pushes]
+    // opcode -> [immediate bytes, pops, pushes]; drives the META table lookup
     const meta = META[op];
     if (meta === undefined) return trap(5);
     const [imm, pops, pushes] = meta;
